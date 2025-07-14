@@ -1,5 +1,6 @@
 package eu.decentsoftware.holograms.api.holograms.objects;
 
+import com.google.common.collect.Sets;
 import eu.decentsoftware.holograms.api.holograms.enums.EnumFlag;
 import lombok.Getter;
 import lombok.NonNull;
@@ -12,7 +13,7 @@ import java.util.Set;
 @Getter
 public abstract class FlagHolder {
 
-    protected final Set<EnumFlag> flags = Collections.synchronizedSet(new HashSet<>());
+    protected final Set<EnumFlag> flags = Sets.newConcurrentHashSet();
 
     public void addFlags(EnumFlag @NonNull ... flags) {
         this.flags.addAll(Arrays.asList(flags));

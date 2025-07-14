@@ -11,7 +11,6 @@ import eu.decentsoftware.holograms.api.convertor.IConvertor;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import eu.decentsoftware.holograms.api.utils.Common;
 import eu.decentsoftware.holograms.api.utils.message.Message;
-import eu.decentsoftware.holograms.api.utils.scheduler.S;
 import eu.decentsoftware.holograms.plugin.Validator;
 import eu.decentsoftware.holograms.plugin.convertors.ConvertorResult;
 import eu.decentsoftware.holograms.plugin.convertors.ConvertorType;
@@ -199,7 +198,7 @@ public class HologramsCommand extends DecentCommand {
         @Override
         public CommandHandler getCommandHandler() {
             return (sender, args) -> {
-                S.async(() -> {
+                PLUGIN.getScheduler().runAsync(() -> {
                     long start = System.currentTimeMillis();
                     PLUGIN.reload();
                     long end = System.currentTimeMillis();

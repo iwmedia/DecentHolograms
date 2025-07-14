@@ -13,6 +13,9 @@ import eu.decentsoftware.holograms.api.utils.Log;
 import eu.decentsoftware.holograms.api.utils.UpdateChecker;
 import eu.decentsoftware.holograms.api.utils.event.EventFactory;
 import eu.decentsoftware.holograms.api.utils.reflect.Version;
+import eu.decentsoftware.holograms.api.utils.scheduler.adapter.SchedulerAdapter;
+import eu.decentsoftware.holograms.api.utils.scheduler.bukkit.BukkitSchedulerAdapter;
+import eu.decentsoftware.holograms.api.utils.scheduler.folia.FoliaSchedulerAdapter;
 import eu.decentsoftware.holograms.api.utils.tick.Ticker;
 import eu.decentsoftware.holograms.event.DecentHologramsReloadEvent;
 import eu.decentsoftware.holograms.nms.DecentHologramsNmsPacketListener;
@@ -45,6 +48,7 @@ public final class DecentHolograms {
 
     private final JavaPlugin plugin;
     private NmsAdapter nmsAdapter;
+    private SchedulerAdapter scheduler;
     private NmsPacketListenerService nmsPacketListenerService;
     private HologramManager hologramManager;
     private CommandManager commandManager;
@@ -55,6 +59,7 @@ public final class DecentHolograms {
 
     DecentHolograms(@NonNull JavaPlugin plugin) {
         this.plugin = plugin;
+        this.scheduler = FoliaSchedulerAdapter.isSupported() ? new FoliaSchedulerAdapter(plugin) : new BukkitSchedulerAdapter(plugin);
     }
 
     void enable() {
@@ -72,7 +77,7 @@ public final class DecentHolograms {
 
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new PlayerListener(this), this.plugin);
-        pm.registerEvents(new WorldListener(hologramManager), this.plugin);
+        pm.registerEvents(new WorldListener(this, hologramManager), this.plugin);
 
         setupMetrics();
         checkForUpdates();

@@ -1,11 +1,11 @@
 package eu.decentsoftware.holograms.api.listeners;
 
+import eu.decentsoftware.holograms.api.DecentHolograms;
 import eu.decentsoftware.holograms.api.holograms.DisableCause;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import eu.decentsoftware.holograms.api.holograms.HologramManager;
 import eu.decentsoftware.holograms.api.utils.Log;
 import eu.decentsoftware.holograms.api.utils.exception.LocationParseException;
-import eu.decentsoftware.holograms.api.utils.scheduler.S;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,9 +17,11 @@ import java.util.Set;
 
 public class WorldListener implements Listener {
 
+    private final DecentHolograms decentHolograms;
     private final HologramManager hologramManager;
 
-    public WorldListener(HologramManager hologramManager) {
+    public WorldListener(DecentHolograms decentHolograms, HologramManager hologramManager) {
+        this.decentHolograms = decentHolograms;
         this.hologramManager = hologramManager;
     }
 
@@ -27,7 +29,7 @@ public class WorldListener implements Listener {
     public void onWorldUnload(WorldUnloadEvent event) {
         World world = event.getWorld();
 
-        S.async(() -> hologramManager.getHolograms().stream()
+        this.decentHolograms.getScheduler().runAsync(() -> hologramManager.getHolograms().stream()
                 .filter(Hologram::isEnabled)
                 .filter(hologram -> hologram.getLocation().getWorld().equals(world))
                 .forEach(hologram -> hologram.disable(DisableCause.WORLD_UNLOAD)));
@@ -37,7 +39,7 @@ public class WorldListener implements Listener {
     public void onWorldLoad(WorldLoadEvent event) {
         World world = event.getWorld();
 
-        S.async(() -> {
+        this.decentHolograms.getScheduler().runAsync(() -> {
             Set<String> hologramsToLoad = getHologramsToLoadByWorld(world);
             if (!hologramsToLoad.isEmpty()) {
                 hologramsToLoad.forEach(fileName -> {

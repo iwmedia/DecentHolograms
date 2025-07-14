@@ -8,6 +8,8 @@ description: ${description}
 version: ${version}
 author: d0by
 
+folia-supported: true
+
 #commands:
 #  decentholograms:
 #    aliases: [dh, holograms, hologram, holo]

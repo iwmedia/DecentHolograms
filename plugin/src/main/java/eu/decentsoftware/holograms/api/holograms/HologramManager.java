@@ -7,7 +7,6 @@ import eu.decentsoftware.holograms.api.utils.Common;
 import eu.decentsoftware.holograms.api.utils.Log;
 import eu.decentsoftware.holograms.api.utils.exception.LocationParseException;
 import eu.decentsoftware.holograms.api.utils.file.FileUtils;
-import eu.decentsoftware.holograms.api.utils.scheduler.S;
 import eu.decentsoftware.holograms.api.utils.tick.Ticked;
 import lombok.NonNull;
 import org.bukkit.Bukkit;
@@ -22,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class is a manager that handles all holograms. It is responsible for
@@ -53,7 +53,7 @@ public class HologramManager extends Ticked {
         this.decentHolograms = decentHolograms;
         this.register();
 
-        S.async(this::reload); // Reload when the worlds are ready
+        this.decentHolograms.getScheduler().runAsync(this::reload); // Reload when the worlds are ready
     }
 
     @Override
@@ -111,10 +111,10 @@ public class HologramManager extends Ticked {
         HologramLine line = new HologramLine(null, location, content);
         temporaryLines.add(line);
         line.show();
-        S.async(() -> {
+        this.decentHolograms.getScheduler().runAsyncDelayed(() -> {
             line.destroy();
             temporaryLines.remove(line);
-        }, duration);
+        }, duration * 50L, TimeUnit.MILLISECONDS); // Convert ticks to milliseconds
         return line;
     }
 
@@ -172,7 +172,7 @@ public class HologramManager extends Ticked {
     public synchronized void reload() {
         this.destroy();
         this.loadHolograms();
-        S.async(this::updateVisibility);
+        this.decentHolograms.getScheduler().runAsync(this::updateVisibility);
     }
 
     private void loadHolograms() {
