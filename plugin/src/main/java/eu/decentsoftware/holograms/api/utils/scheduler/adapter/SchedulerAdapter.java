@@ -8,13 +8,6 @@ import java.util.concurrent.TimeUnit;
 public interface SchedulerAdapter {
 
     /**
-     * Cancels the task with the specified ID.
-     *
-     * @param id The ID of the task to cancel.
-     */
-    void cancelTask(int id);
-
-    /**
      * Schedules the specified task to be executed asynchronously immediately.
      *
      * @param runnable The task to execute.

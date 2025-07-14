@@ -95,11 +95,6 @@ public class FoliaSchedulerAdapter implements SchedulerAdapter {
     }
 
     @Override
-    public void cancelTask(int id) {
-        throw new UnsupportedOperationException("Folia scheduler does not support task cancellation by ID. Use the returned BukkitTask to cancel tasks instead.");
-    }
-
-    @Override
     public BukkitTask runAsync(Runnable runnable) {
         try {
             final Consumer<Object> consumer = task -> runnable.run();

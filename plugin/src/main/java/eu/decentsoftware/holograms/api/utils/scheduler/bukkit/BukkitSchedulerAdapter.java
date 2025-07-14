@@ -16,11 +16,6 @@ public class BukkitSchedulerAdapter implements SchedulerAdapter {
     private @NonNull Plugin plugin;
 
     @Override
-    public void cancelTask(int id) {
-        Bukkit.getScheduler().cancelTask(id);
-    }
-
-    @Override
     public BukkitTask runAsync(Runnable runnable) {
         return Bukkit.getScheduler().runTaskAsynchronously(this.plugin, runnable);
     }
